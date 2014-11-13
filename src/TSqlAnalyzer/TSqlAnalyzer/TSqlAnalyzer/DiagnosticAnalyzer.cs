@@ -75,24 +75,19 @@ namespace TSqlAnalyzer
 		private static void RunDiagnostics(SyntaxNodeAnalysisContext context, LiteralExpressionSyntax literalExpression)
 		{
 			if (literalExpression == null)
-			{
-				return;
-			}
+			    return;
+			
 
 			if (literalExpression.IsKind(SyntaxKind.StringLiteralExpression)
 				&& literalExpression.Token.IsKind(SyntaxKind.StringLiteralToken))
 			{
 				var sql = literalExpression.Token.ValueText;
-				if (string.IsNullOrWhiteSpace(sql))
-				{
+				if (string.IsNullOrWhiteSpace(sql) )				
 					return;
-				}
-
+				
 				List<string> errors = SqlParser.Parse(sql);
 				if (errors.Count == 0)
-				{
-					return;
-				}
+				    return;
 
 				string errorText = String.Join("\r\n", errors);
 				var diagnostic = Diagnostic.Create(Rule, literalExpression.GetLocation(), errorText);
