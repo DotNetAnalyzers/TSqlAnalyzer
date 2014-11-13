@@ -106,11 +106,11 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
-
+        /*
 		protected override CodeFixProvider GetCSharpCodeFixProvider()
 		{
 			return new SqlAnalyzerCodeFixProvider();
-		}
+		}*/
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -34,15 +32,11 @@ namespace TSqlAnalyzer
 			var assignmentExpression = (AssignmentExpressionSyntax)context.Node;
 
 			if (!assignmentExpression.Left.IsKind(SyntaxKind.SimpleMemberAccessExpression))
-			{
 				return;
-			}
 
 			//TODO Is it possible to detect type info?
 			if (!assignmentExpression.Left.ToString().Contains("CommandText"))
-			{
 				return;
-			}
 
 			var literalExpression = assignmentExpression.Right as LiteralExpressionSyntax;
 
@@ -56,14 +50,10 @@ namespace TSqlAnalyzer
 
 			//TODO Is it possible to detect type info?
 			if (!objectCreationExpression.Type.ToString().Contains("SqlCommand"))
-			{
 				return;
-			}
 
 			if (objectCreationExpression.ArgumentList.Arguments.Count == 0)
-			{
 				return;
-			}
 
 			ExpressionSyntax expressionSyntax = objectCreationExpression.ArgumentList.Arguments.First().Expression;
 
@@ -77,12 +67,11 @@ namespace TSqlAnalyzer
 			if (literalExpression == null)
 			    return;
 			
-
 			if (literalExpression.IsKind(SyntaxKind.StringLiteralExpression)
 				&& literalExpression.Token.IsKind(SyntaxKind.StringLiteralToken))
 			{
 				var sql = literalExpression.Token.ValueText;
-				if (string.IsNullOrWhiteSpace(sql) )				
+				if (string.IsNullOrWhiteSpace(sql) )
 					return;
 				
 				List<string> errors = SqlParser.Parse(sql);
