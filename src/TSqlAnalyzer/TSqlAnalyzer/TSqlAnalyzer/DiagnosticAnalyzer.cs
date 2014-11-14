@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Linq;
 
 namespace TSqlAnalyzer
 {
@@ -17,8 +18,9 @@ namespace TSqlAnalyzer
 		internal const string Category = "Naming";
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId+"1", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule).Add(RuleParam); } }
 
 		public override void Initialize(AnalysisContext context)
 		{
@@ -58,11 +60,51 @@ namespace TSqlAnalyzer
 			ExpressionSyntax expressionSyntax = objectCreationExpression.ArgumentList.Arguments.First().Expression;
 
 			var literalExpression = expressionSyntax as LiteralExpressionSyntax;
+            if(literalExpression != null)
+			    RunDiagnostics(context, literalExpression);
 
-			RunDiagnostics(context, literalExpression);
-		}
+            RunDiagnostics(context, expressionSyntax);
 
-		private static void RunDiagnostics(SyntaxNodeAnalysisContext context, LiteralExpressionSyntax literalExpression)
+        }
+
+        private static void RunDiagnostics(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
+        {
+
+            BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
+            if (method == null)
+                return;
+
+            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == "sql").First<SyntaxToken>();
+
+            string sql = t.GetNextToken().GetNextToken().Value.ToString();
+            if(string.IsNullOrWhiteSpace(sql))
+                return;
+
+            List<string> errors = SqlParser.Parse(sql);
+            if (errors.Count == 0)
+                return;
+
+            string errorText = String.Join("\r\n", errors);
+            var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
+
+            context.ReportDiagnostic(diagnostic);
+
+            /*if (token.Parent.IsKind(SyntaxKind.IdentifierName) == false)
+                return;
+            
+            if (token.Parent.Parent.Parent.IsKind(SyntaxKind.StringLiteralExpression) == false)
+                return;
+                */
+            // var literalExpression = token.Parent.Parent as LiteralExpressionSyntax;
+
+
+            //var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("sql")).WithInitializer(SyntaxFactory.EqualsValueClause(literalExpression));
+            //if (literalExpression != null)
+            //  RunDiagnostics(context, literalExpression);
+
+        }
+
+        private static void RunDiagnostics(SyntaxNodeAnalysisContext context, LiteralExpressionSyntax literalExpression)
 		{
 			if (literalExpression == null)
 			    return;
