@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22231.1
+VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlAnalyzer", "TSqlAnalyzer\TSqlAnalyzer\TSqlAnalyzer.csproj", "{1C5E0C84-F181-4CBE-BBAE-A299E2D580D5}"
 EndProject
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3C90FF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlAnalyzer.Test", "TSqlAnalyzer\TSqlAnalyzer.Test\TSqlAnalyzer.Test.csproj", "{5555BC8C-81B6-442F-9E99-90310A141BE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSqlAnalyzer.Vsix", "TSqlAnalyzer\TSqlAnalyzer.Vsix\TSqlAnalyzer.Vsix.csproj", "{C12F7742-A165-487F-86BE-99555D61A880}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAnalyzer.Vsix", "TSqlAnalyzer\TSqlAnalyzer.Vsix\SqlAnalyzer.Vsix.csproj", "{C12F7742-A165-487F-86BE-99555D61A880}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
