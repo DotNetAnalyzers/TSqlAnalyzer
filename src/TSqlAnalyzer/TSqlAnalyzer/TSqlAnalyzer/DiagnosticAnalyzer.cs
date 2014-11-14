@@ -60,21 +60,26 @@ namespace TSqlAnalyzer
 			ExpressionSyntax expressionSyntax = objectCreationExpression.ArgumentList.Arguments.First().Expression;
 
 			var literalExpression = expressionSyntax as LiteralExpressionSyntax;
-            if(literalExpression != null)
-			    RunDiagnostics(context, literalExpression);
-
+            if (literalExpression != null)
+            {
+                RunDiagnostics(context, literalExpression);
+                return;
+            }
             RunDiagnostics(context, expressionSyntax);
-
         }
 
         private static void RunDiagnostics(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
         {
+          
+            string id = token.ToFullString();
+            if (string.IsNullOrWhiteSpace(id))
+                return;
 
             BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
             if (method == null)
                 return;
 
-            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == "sql").First<SyntaxToken>();
+            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
 
             string sql = t.GetNextToken().GetNextToken().Value.ToString();
             if(string.IsNullOrWhiteSpace(sql))
