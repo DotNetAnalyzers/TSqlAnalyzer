@@ -93,20 +93,6 @@ namespace TSqlAnalyzer
             var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
 
             context.ReportDiagnostic(diagnostic);
-
-            /*if (token.Parent.IsKind(SyntaxKind.IdentifierName) == false)
-                return;
-            
-            if (token.Parent.Parent.Parent.IsKind(SyntaxKind.StringLiteralExpression) == false)
-                return;
-                */
-            // var literalExpression = token.Parent.Parent as LiteralExpressionSyntax;
-
-
-            //var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("sql")).WithInitializer(SyntaxFactory.EqualsValueClause(literalExpression));
-            //if (literalExpression != null)
-            //  RunDiagnostics(context, literalExpression);
-
         }
 
         private static void RunDiagnostics(SyntaxNodeAnalysisContext context, LiteralExpressionSyntax literalExpression)
