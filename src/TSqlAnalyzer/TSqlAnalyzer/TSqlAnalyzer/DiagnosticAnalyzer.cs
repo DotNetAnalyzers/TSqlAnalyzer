@@ -40,10 +40,16 @@ namespace TSqlAnalyzer
 			if (!assignmentExpression.Left.ToString().Contains("CommandText"))
 				return;
 
-			var literalExpression = assignmentExpression.Right as LiteralExpressionSyntax;
+            var literalExpression = assignmentExpression.Right as LiteralExpressionSyntax;
 
-			RunDiagnostics(context, literalExpression);
-		}
+            if (literalExpression != null)
+            {
+                RunDiagnostics(context, literalExpression);
+                return;
+            }
+            
+            RunDiagnostics(context, assignmentExpression.Right as ExpressionSyntax);
+        }
 
 
 		private static void AnalyzeConstructorNode(SyntaxNodeAnalysisContext context)
@@ -74,12 +80,16 @@ namespace TSqlAnalyzer
             string id = token.ToFullString();
             if (string.IsNullOrWhiteSpace(id))
                 return;
+            if (token.IsKind(SyntaxKind.InvocationExpression))
+                return;
 
             BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
             if (method == null)
                 return;
 
-            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
+            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.ValueText != null && tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
+            if (string.IsNullOrWhiteSpace(t.ValueText))
+                return;
 
             string sql = t.GetNextToken().GetNextToken().Value.ToString();
             if(string.IsNullOrWhiteSpace(sql))
