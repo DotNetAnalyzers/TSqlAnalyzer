@@ -7,4 +7,4 @@ Based on the Microsoft.SqlServer.TransactSql.ScriptDom Nuget package
 
 Image showing the T-SQL Analyzer in action
 
-![alt tag](https://raw.github.com/erikej/tsqlanalyzer/dev/sqlanalyzer.png)
+![alt tag](sqlanalyzer.png)
