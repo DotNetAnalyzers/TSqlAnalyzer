@@ -106,11 +106,26 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
-        /*
-		protected override CodeFixProvider GetCSharpCodeFixProvider()
+		[TestMethod]
+		public void No_Reporting_In_Complex_Assignment_Currently()
 		{
-			return new SqlAnalyzerCodeFixProvider();
-		}*/
+			var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = "" WHERE X = y"";
+            var cmd = new SqlCommand(""SEL * FROM TABLE"" + sql);
+		}
+	}
+}";
+			VerifyCSharpDiagnostic(test);
+		}
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
