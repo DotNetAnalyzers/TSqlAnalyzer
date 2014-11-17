@@ -18,7 +18,8 @@ namespace TSqlAnalyzer
 		internal const string Category = "Naming";
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
-        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId+"1", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId + "1", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+        internal static DiagnosticDescriptor RuleParam1 = new DiagnosticDescriptor(DiagnosticId + "2", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule).Add(RuleParam); } }
 
@@ -44,11 +45,16 @@ namespace TSqlAnalyzer
 
             if (literalExpression != null)
             {
-                RunDiagnostics(context, literalExpression);
+                Diagnostics.LiteralExpressionDiagnostic.Run(context, literalExpression);
                 return;
             }
-            
-            RunDiagnostics(context, assignmentExpression.Right as ExpressionSyntax);
+            var binaryExpression = assignmentExpression.Right as BinaryExpressionSyntax;
+            if (binaryExpression != null)
+            {
+                Diagnostics.BinaryExpressionDiagnostic.Run(context, binaryExpression);
+                return;
+            }
+            Diagnostics.ExpressionDiagnostic.Run(context, assignmentExpression.Right as ExpressionSyntax);
         }
 
 
@@ -68,64 +74,17 @@ namespace TSqlAnalyzer
 			var literalExpression = expressionSyntax as LiteralExpressionSyntax;
             if (literalExpression != null)
             {
-                RunDiagnostics(context, literalExpression);
+                Diagnostics.LiteralExpressionDiagnostic.Run(context, literalExpression);
                 return;
             }
-            RunDiagnostics(context, expressionSyntax);
+            var binaryExpression = expressionSyntax as BinaryExpressionSyntax;
+            if(binaryExpression != null)
+            {
+                Diagnostics.BinaryExpressionDiagnostic.Run(context, binaryExpression);
+                return;
+            }
+
+            Diagnostics.ExpressionDiagnostic.Run(context, expressionSyntax);
         }
-
-        private static void RunDiagnostics(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
-        {
-          
-            string id = token.ToFullString();
-            if (string.IsNullOrWhiteSpace(id))
-                return;
-            if (token.IsKind(SyntaxKind.InvocationExpression))
-                return;
-
-            BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
-            if (method == null)
-                return;
-
-            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.ValueText != null && tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
-            if (string.IsNullOrWhiteSpace(t.ValueText))
-                return;
-
-            string sql = t.GetNextToken().GetNextToken().Value.ToString();
-            if(string.IsNullOrWhiteSpace(sql))
-                return;
-
-            List<string> errors = SqlParser.Parse(sql);
-            if (errors.Count == 0)
-                return;
-
-            string errorText = String.Join("\r\n", errors);
-            var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
-
-            context.ReportDiagnostic(diagnostic);
-        }
-
-        private static void RunDiagnostics(SyntaxNodeAnalysisContext context, LiteralExpressionSyntax literalExpression)
-		{
-			if (literalExpression == null)
-			    return;
-			
-			if (literalExpression.IsKind(SyntaxKind.StringLiteralExpression)
-				&& literalExpression.Token.IsKind(SyntaxKind.StringLiteralToken))
-			{
-				var sql = literalExpression.Token.ValueText;
-				if (string.IsNullOrWhiteSpace(sql) )
-					return;
-				
-				List<string> errors = SqlParser.Parse(sql);
-				if (errors.Count == 0)
-				    return;
-
-				string errorText = String.Join("\r\n", errors);
-				var diagnostic = Diagnostic.Create(Rule, literalExpression.GetLocation(), errorText);
-
-				context.ReportDiagnostic(diagnostic);
-			}
-		}
 	}
 }

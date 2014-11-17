@@ -42,7 +42,29 @@ namespace ConsoleApplication1
 			VerifyCSharpDiagnostic(test);
 		}
 
-		[TestMethod]
+        //Diagnostics checked for
+        [TestMethod]
+        public void Concat_Strings_Works()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;    
+
+namespace ConsoleApplication1
+{
+	class TypeName
+	{
+		private void AnalyzerTest()
+		{
+			var cmd = new SqlCommand(""SELECT id FROM userTable"" + "" where id = '1'"");   
+		}
+	}
+}";
+            VerifyCSharpDiagnostic(test);
+        }
+
+
+        [TestMethod]
 		public void Invalid_Sql_Reported_In_Constructor_Literal()
 		{
 			var test = @"
