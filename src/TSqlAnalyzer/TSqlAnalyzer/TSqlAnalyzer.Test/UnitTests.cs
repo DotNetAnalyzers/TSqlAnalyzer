@@ -106,6 +106,7 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
+
 		[TestMethod]
 		public void No_Reporting_In_Complex_Assignment_Currently()
 		{
