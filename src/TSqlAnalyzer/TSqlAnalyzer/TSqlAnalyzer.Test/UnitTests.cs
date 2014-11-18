@@ -179,17 +179,6 @@ class TypeName
 		}
 	}
 }";
-			var expected = new DiagnosticResult
-			{
-				Id = SqlAnalyzerAnalyzer.DiagnosticId,
-				Message = "Incorrect syntax near SEL.",
-				Severity = DiagnosticSeverity.Error,
-				Locations =
-					new[] {
-					new DiagnosticResultLocation("Test0.cs", 12, 23)
-				}
-			};
-
 			VerifyCSharpDiagnostic(test);
 		}
 
