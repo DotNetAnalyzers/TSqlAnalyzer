@@ -31,23 +31,29 @@ namespace TSqlAnalyzer.Diagnostics
             BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
             if (method == null)
                 return;
+            try
+            {
+                var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.ValueText != null && tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
+                if (string.IsNullOrWhiteSpace(t.ValueText))
+                    return;
 
-            var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.ValueText != null && tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
-            if (string.IsNullOrWhiteSpace(t.ValueText))
-                return;
+                string sql = t.GetNextToken().GetNextToken().Value.ToString();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return;
 
-            string sql = t.GetNextToken().GetNextToken().Value.ToString();
-            if (string.IsNullOrWhiteSpace(sql))
-                return;
+                List<string> errors = SqlParser.Parse(sql);
+                if (errors.Count == 0)
+                    return;
 
-            List<string> errors = SqlParser.Parse(sql);
-            if (errors.Count == 0)
-                return;
+                string errorText = String.Join("\r\n", errors);
+                var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
 
-            string errorText = String.Join("\r\n", errors);
-            var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
-
-            context.ReportDiagnostic(diagnostic);
+                context.ReportDiagnostic(diagnostic);
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("don't handle syntax yet: " + ex.Message);
+            }
         }
     }
 }
