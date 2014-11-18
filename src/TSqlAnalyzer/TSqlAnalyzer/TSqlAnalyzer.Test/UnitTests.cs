@@ -63,6 +63,42 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void Method_Return_String_Works()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+	class TypeName
+	{
+		private void AnalyzerTest()
+		{
+			var cmd = new SqlCommand(sql());
+		}
+
+        private string sql()
+        {
+            return ""SEL * FROM MyTable;"";
+        }
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 11, 28)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(test);
+        }
 
         [TestMethod]
 		public void Invalid_Sql_Reported_In_Constructor_Literal()
@@ -77,7 +113,7 @@ class TypeName
 {
 	private void AnalyzerTest()
 	{
-		var cmd = new SqlCommand(""SEL * FROM MyTable;"");   
+		var cmd = new SqlCommand(""SEL * FROM MyTable;"");
 	}
 }
 }";
@@ -163,7 +199,7 @@ class TypeName
 
 
         [TestMethod]
-        public void Reporting_In_Complex_Assignment_2_Works()
+        public void Reporting_In_Complex_Assignment_2_Incorrect_Syntax()
         {
             var test = @"
 using System;
@@ -195,7 +231,7 @@ class TypeName
         }
 
         [TestMethod]
-        public void Reporting_In_Complex_Assignment_2_variables_and_string_Works()
+        public void Reporting_In_Complex_Assignment_2_variables_and_string_Incorrect_Syntax()
         {
             var test = @"
 using System;
@@ -221,6 +257,39 @@ class TypeName
                 Locations =
                     new[] {
                     new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_concatenated_variables_and_string_Syntax_Error()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+            var eq = ""X = y""
+            var sql = ""SEL * FROM myTABLE"" + eq;
+            var cmd = new SqlCommand(sql);
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 12, 23)
                 }
             };
 
