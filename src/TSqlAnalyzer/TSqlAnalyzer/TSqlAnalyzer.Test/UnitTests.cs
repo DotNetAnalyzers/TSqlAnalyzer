@@ -130,7 +130,7 @@ class TypeName
 
 
 		[TestMethod]
-		public void No_Reporting_In_Complex_Assignment_Currently()
+		public void Reporting_In_Complex_Assignment_Works()
 		{
 			var test = @"
 using System;
@@ -154,10 +154,44 @@ class TypeName
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                    new DiagnosticResultLocation("Test0.cs", 12, 27)
+                    new DiagnosticResultLocation("Test0.cs", 12, 23)
                 }
             };
-        }
+
+			VerifyCSharpDiagnostic(test, expected);
+		}
+
+		[TestMethod]
+		public void No_Reporting_In_Valid_Complex_Assignment()
+		{
+			var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = "" WHERE X = y"";
+            var cmd = new SqlCommand(""SELECT * FROM myTABLE"" + sql);
+		}
+	}
+}";
+			var expected = new DiagnosticResult
+			{
+				Id = SqlAnalyzerAnalyzer.DiagnosticId,
+				Message = "Incorrect syntax near SEL.",
+				Severity = DiagnosticSeverity.Error,
+				Locations =
+					new[] {
+					new DiagnosticResultLocation("Test0.cs", 12, 23)
+				}
+			};
+
+			VerifyCSharpDiagnostic(test);
+		}
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
