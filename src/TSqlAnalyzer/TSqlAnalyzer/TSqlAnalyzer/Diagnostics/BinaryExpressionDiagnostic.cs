@@ -16,7 +16,7 @@ namespace TSqlAnalyzer.Diagnostics
         private const string MessageFormat = "{0}";
         private const string Category = "Naming";
 
-        internal static DiagnosticDescriptor RuleParam1 = new DiagnosticDescriptor(DiagnosticId + "2", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+        internal static DiagnosticDescriptor RuleParam1 = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
         internal static void Run(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax token)
         {
             string id = token.ToFullString();

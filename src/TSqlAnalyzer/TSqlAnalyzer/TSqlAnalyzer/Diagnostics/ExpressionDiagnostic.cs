@@ -16,7 +16,8 @@ namespace TSqlAnalyzer.Diagnostics
         private const string Title = "Illegal T-SQL";
         private const string MessageFormat = "{0}";
         private const string Category = "Naming";
-        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId + "1", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+
+        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
         internal static void Run(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
         {

@@ -18,10 +18,8 @@ namespace TSqlAnalyzer
 		internal const string Category = "Naming";
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
-        internal static DiagnosticDescriptor RuleParam = new DiagnosticDescriptor(DiagnosticId + "1", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
-        internal static DiagnosticDescriptor RuleParam1 = new DiagnosticDescriptor(DiagnosticId + "2", Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule).Add(RuleParam); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
 		public override void Initialize(AnalysisContext context)
 		{
