@@ -27,7 +27,7 @@ namespace TSqlAnalyzer.Test
 		{
 			var test = @"
 using System;
-using System.Data.SqlClient;    
+using System.Data.SqlClient;
 
 namespace ConsoleApplication1
 {
@@ -35,7 +35,7 @@ namespace ConsoleApplication1
 	{
 		private void AnalyzerTest()
 		{
-			var cmd = new SqlCommand(""SELECT * FROM MyTable;"");   
+			var cmd = new SqlCommand(""SELECT * FROM MyTable;"");
 		}
 	}
 }";
@@ -48,7 +48,7 @@ namespace ConsoleApplication1
         {
             var test = @"
 using System;
-using System.Data.SqlClient;    
+using System.Data.SqlClient;
 
 namespace ConsoleApplication1
 {
@@ -56,7 +56,7 @@ namespace ConsoleApplication1
 	{
 		private void AnalyzerTest()
 		{
-			var cmd = new SqlCommand(""SELECT id FROM userTable"" + "" where id = '1'"");   
+			var cmd = new SqlCommand(""SELECT id FROM userTable"" + "" where id = '1'"");
 		}
 	}
 }";
@@ -143,12 +143,21 @@ class TypeName
 	private void AnalyzerTest()
 	{
 			var sql = "" WHERE X = y"";
-            var cmd = new SqlCommand(""SEL * FROM TABLE"" + sql);
+            var cmd = new SqlCommand(""SEL * FROM myTABLE"" + sql);
 		}
 	}
 }";
-			VerifyCSharpDiagnostic(test);
-		}
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 12, 27)
+                }
+            };
+        }
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
