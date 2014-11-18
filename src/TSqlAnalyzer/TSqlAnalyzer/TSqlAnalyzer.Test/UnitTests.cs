@@ -161,7 +161,73 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
-		[TestMethod]
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_Works()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = ""SEL * FROM myTABLE"";
+            var cmd = new SqlCommand(sql + "" WHERE X = y"");
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 12, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_variables_and_string_Works()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = ""SEL * FROM myTABLE"";
+            var eq = ""X = y""
+            var cmd = new SqlCommand(sql + "" WHERE "" + eq);
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
 		public void No_Reporting_In_Valid_Complex_Assignment()
 		{
 			var test = @"

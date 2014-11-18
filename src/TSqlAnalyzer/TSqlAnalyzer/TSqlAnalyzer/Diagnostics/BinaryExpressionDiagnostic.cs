@@ -27,30 +27,8 @@ namespace TSqlAnalyzer.Diagnostics
                 return;
 
             string[] list = id.Split('+');
-            if (list.Count() != 2)
-                return;
 
-            string sql = list[0];
-            sql = sql.Replace("\"", string.Empty);
-
-            if (list[1].Contains("\""))
-            {
-                sql += list[1].Replace("\"", string.Empty);
-            }
-            else
-            {
-                id = list[1].Replace(" ", "");
-
-                BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
-                if (method == null)
-                    return;
-            
-                var t = method.DescendantTokens().Where<SyntaxToken>(st => st.ValueText == id).First<SyntaxToken>();
-                if (string.IsNullOrWhiteSpace(t.ValueText))
-                    return;
-
-                sql += t.GetNextToken().GetNextToken().Value.ToString();
-            }
+            string sql = BuildSqlStringFromList(list, context, id);
 
             if (string.IsNullOrWhiteSpace(sql))
                 return;
@@ -63,6 +41,33 @@ namespace TSqlAnalyzer.Diagnostics
             var diagnostic = Diagnostic.Create(RuleParam1, context.Node.GetLocation(), errorText);
 
             context.ReportDiagnostic(diagnostic);
+        }
+
+        private static string BuildSqlStringFromList(string[] list, SyntaxNodeAnalysisContext context, string id)
+        {
+            string sql = string.Empty;
+            foreach (string s in list)
+            {
+                if (s.Contains("\""))
+                {
+                    sql += s.Replace("\"", string.Empty);
+                }
+                else
+                {
+                    id = s.Replace(" ", "");
+
+                    BlockSyntax method = context.Node.FirstAncestorOrSelf<BlockSyntax>();
+                    if (method == null)
+                        break;
+
+                    var t = method.DescendantTokens().Where<SyntaxToken>(st => st.ValueText == id).First<SyntaxToken>();
+                    if (string.IsNullOrWhiteSpace(t.ValueText))
+                        break;
+
+                    sql += t.GetNextToken().GetNextToken().Value.ToString();
+                }
+            }
+            return sql;
         }
     }
 }
