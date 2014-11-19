@@ -64,7 +64,7 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
-        public void Method_Return_String_Works()
+        public void string_interpolation_syntax_error_as_expected()
         {
             var test = @"
 using System;
@@ -76,28 +76,24 @@ namespace ConsoleApplication1
 	{
 		private void AnalyzerTest()
 		{
-			var cmd = new SqlCommand(sql());
-		}
-
-        private string sql()
-        {
-            return ""SEL * FROM MyTable;"";
+			string selection = ""id, name, title"";
+            string where = ""id = '1'"";
+            var cmd = new SqlCommand(""SEL \{selection} WHERE \{where}"");
         }
 	}
 }";
             var expected = new DiagnosticResult
             {
                 Id = SqlAnalyzerAnalyzer.DiagnosticId,
-                Message = "Incorrect syntax near SEL.",
+                Message = "Incorrect syntax near title.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                    new DiagnosticResultLocation("Test0.cs", 11, 28)
+                    new DiagnosticResultLocation("Test0.cs", 13, 23)
                 }
             };
 
             VerifyCSharpDiagnostic(test, expected);
-            VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]

@@ -25,6 +25,7 @@ namespace TSqlAnalyzer.Diagnostics
             string id = token.ToFullString();
             if (string.IsNullOrWhiteSpace(id))
                 return;
+            
 
             if (token.IsKind(SyntaxKind.InvocationExpression))
                 return;
