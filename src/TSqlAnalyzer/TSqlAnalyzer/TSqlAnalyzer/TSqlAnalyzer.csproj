@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DiagnosticAnalyzer.cs" />
+    <Compile Include="Diagnostics\Helper.cs" />
     <Compile Include="Diagnostics\InterpolatedStringExpressionDiagnostic.cs" />
     <Compile Include="Diagnostics\BinaryExpressionDiagnostic.cs" />
     <Compile Include="Diagnostics\ExpressionDiagnostic.cs" />

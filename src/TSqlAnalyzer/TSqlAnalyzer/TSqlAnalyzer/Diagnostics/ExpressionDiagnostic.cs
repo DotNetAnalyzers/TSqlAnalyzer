@@ -36,6 +36,7 @@ namespace TSqlAnalyzer.Diagnostics
             try
             {
                 var t = method.DescendantTokens().Where<SyntaxToken>(tk => tk.ValueText != null && tk.IsKind(SyntaxKind.IdentifierToken) && tk.ValueText == id).First<SyntaxToken>();
+
                 if (string.IsNullOrWhiteSpace(t.ValueText))
                     return;
 
