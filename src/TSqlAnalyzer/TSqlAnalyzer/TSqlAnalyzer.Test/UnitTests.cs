@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -90,6 +89,41 @@ namespace ConsoleApplication1
                 Locations =
                     new[] {
                     new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void stringbuilder_syntax_error_as_expected()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+	class TypeName
+	{
+		private void AnalyzerTest()
+		{
+			StringBuilder sbl = new StringBuilder();
+            sbl.Append(""SEL"");
+            sbl.Append("" * "");
+            sbl.Append(""FROM user"");
+            var cmd2 = new SqlCommand(sbl.ToString());
+        }
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 15, 24)
                 }
             };
 
