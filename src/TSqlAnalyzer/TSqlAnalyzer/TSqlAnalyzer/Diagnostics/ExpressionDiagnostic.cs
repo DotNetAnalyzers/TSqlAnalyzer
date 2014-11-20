@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Linq;
-
 
 namespace TSqlAnalyzer.Diagnostics
 {
@@ -21,11 +19,9 @@ namespace TSqlAnalyzer.Diagnostics
 
         internal static void Run(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
         {
-
             string id = token.ToFullString();
             if (string.IsNullOrWhiteSpace(id))
                 return;
-            
 
             if (token.IsKind(SyntaxKind.InvocationExpression))
                 return;
@@ -45,9 +41,18 @@ namespace TSqlAnalyzer.Diagnostics
                     return;
 
                 List<string> errors = SqlParser.Parse(sql);
-                if (errors.Count == 0)
-                    return;
 
+                if (errors.Count == 0)
+                {
+                    var binaryExpressions = method.DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().First<BinaryExpressionSyntax>();
+
+                    if (binaryExpressions != null)
+                    {
+                        BinaryExpressionDiagnostic.Run(context, binaryExpressions);
+                        return;
+                    }
+                    return;
+                }
                 string errorText = String.Join("\r\n", errors);
                 var diagnostic = Diagnostic.Create(RuleParam, t.GetNextToken().GetNextToken().GetLocation(), errorText);
 

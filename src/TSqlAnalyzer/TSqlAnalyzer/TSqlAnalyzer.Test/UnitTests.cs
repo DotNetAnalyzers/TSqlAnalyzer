@@ -127,8 +127,43 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
+        [TestMethod]
+        public void Invalid_concatenation_Sql_Reported_In_Constructor_Literal()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
 
-		[TestMethod]
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+		string selection = "" * "";
+        string where = ""id = '1'"";
+        string sql = ""SEL "" + selection + ""WHERE "" + where;
+
+        var cmd2 = new SqlCommand(sql);
+    }
+}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 15, 20)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+
+        [TestMethod]
 		public void Invalid_Sql_Reported_In_Simple_Assignment()
 		{
 			var test = @"

@@ -10,7 +10,7 @@ namespace TSqlAnalyzer.Diagnostics
 {
     internal static class Helper
     {
-        internal static string BuildSqlStringFromList(SyntaxNodeAnalysisContext context, string id)
+        internal static string BuildSqlStringFromIdString(SyntaxNodeAnalysisContext context, string id)
         {
             string sql = string.Empty;
 
