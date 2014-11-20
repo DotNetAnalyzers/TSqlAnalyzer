@@ -17,8 +17,7 @@ namespace TSqlAnalyzer
 		internal const string MessageFormat = "{0}";
 		internal const string Category = "Naming";
 
-		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
-
+        internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
 		public override void Initialize(AnalysisContext context)
@@ -39,20 +38,7 @@ namespace TSqlAnalyzer
 			if (!assignmentExpression.Left.ToString().Contains("CommandText"))
 				return;
 
-            var literalExpression = assignmentExpression.Right as LiteralExpressionSyntax;
-
-            if (literalExpression != null)
-            {
-                Diagnostics.LiteralExpressionDiagnostic.Run(context, literalExpression);
-                return;
-            }
-            var binaryExpression = assignmentExpression.Right as BinaryExpressionSyntax;
-            if (binaryExpression != null)
-            {
-                Diagnostics.BinaryExpressionDiagnostic.Run(context, binaryExpression);
-                return;
-            }
-            Diagnostics.ExpressionDiagnostic.Run(context, assignmentExpression.Right as ExpressionSyntax);
+            RunDiagnostic(context, assignmentExpression.Right);
         }
 
 
@@ -68,17 +54,27 @@ namespace TSqlAnalyzer
 				return;
 
 			ExpressionSyntax expressionSyntax = objectCreationExpression.ArgumentList.Arguments.First().Expression;
+            RunDiagnostic(context, expressionSyntax);
+        }
 
-			var literalExpression = expressionSyntax as LiteralExpressionSyntax;
+        private static void RunDiagnostic(SyntaxNodeAnalysisContext context, ExpressionSyntax expressionSyntax)
+        {
+            var literalExpression = expressionSyntax as LiteralExpressionSyntax;
             if (literalExpression != null)
             {
                 Diagnostics.LiteralExpressionDiagnostic.Run(context, literalExpression);
                 return;
             }
             var binaryExpression = expressionSyntax as BinaryExpressionSyntax;
-            if(binaryExpression != null)
+            if (binaryExpression != null)
             {
                 Diagnostics.BinaryExpressionDiagnostic.Run(context, binaryExpression);
+                return;
+            }
+            var interpolatedExpression = expressionSyntax as InterpolatedStringSyntax;
+            if (interpolatedExpression != null)
+            {
+                Diagnostics.InterpolatedStringExpressionDiagnostic.Run(context, interpolatedExpression);
                 return;
             }
 

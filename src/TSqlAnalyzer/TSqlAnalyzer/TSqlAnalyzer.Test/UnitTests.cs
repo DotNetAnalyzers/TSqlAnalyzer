@@ -63,6 +63,38 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void string_interpolation_syntax_error_as_expected()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+	class TypeName
+	{
+		private void AnalyzerTest()
+		{
+			string selection = ""id, name, title"";
+            string where = ""id = '1'"";
+            var cmd = new SqlCommand(""SEL \{selection} WHERE \{where}"");
+        }
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near title.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
 
         [TestMethod]
 		public void Invalid_Sql_Reported_In_Constructor_Literal()
@@ -77,7 +109,7 @@ class TypeName
 {
 	private void AnalyzerTest()
 	{
-		var cmd = new SqlCommand(""SEL * FROM MyTable;"");   
+		var cmd = new SqlCommand(""SEL * FROM MyTable;"");
 	}
 }
 }";
@@ -161,7 +193,106 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
-		[TestMethod]
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_Incorrect_Syntax()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = ""SEL * FROM myTABLE"";
+            var cmd = new SqlCommand(sql + "" WHERE X = y"");
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 12, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_variables_and_string_Incorrect_Syntax()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+			var sql = ""SEL * FROM myTABLE"";
+            var eq = ""X = y""
+            var cmd = new SqlCommand(sql + "" WHERE "" + eq);
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void Reporting_In_Complex_Assignment_2_concatenated_variables_and_string_Syntax_Error()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+            var eq = ""X = y""
+            var sql = ""SEL * FROM myTABLE"" + eq;
+            var cmd = new SqlCommand(sql);
+		}
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 12, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
 		public void No_Reporting_In_Valid_Complex_Assignment()
 		{
 			var test = @"
