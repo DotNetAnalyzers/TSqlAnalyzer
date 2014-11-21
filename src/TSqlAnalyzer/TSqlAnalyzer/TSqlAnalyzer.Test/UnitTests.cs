@@ -77,7 +77,7 @@ namespace ConsoleApplication1
 		{
 			string selection = ""id, name, title"";
             string where = ""id = '1'"";
-            var cmd = new SqlCommand(""SEL \{selection} WHERE \{where}"");
+            var cmd = new SqlCommand(""SEL \{selection} FROM myTable WHERE \{where}"");
         }
 	}
 }";
