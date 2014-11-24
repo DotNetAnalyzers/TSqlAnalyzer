@@ -2,9 +2,9 @@
 <package>
   <metadata>
     <id>TSqlAnalyzer</id>
-    <version>0.0.1-alpha1</version>
+    <version>0.0.1-alpha2</version>
     <title>TSqlAnalyzer</title>
-    <authors>dotnethenrik,ronniedrengen,erikej</authors>
+    <authors>dothenrik,ronniedrengen,erikej</authors>
     <owners>erikej</owners>
     <projectUrl>https://github.com/ErikEJ/TSqlAnalyzer</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
