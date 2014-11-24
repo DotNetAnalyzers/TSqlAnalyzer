@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="SqlAnalyzer.Vsix..d48c281e-9c8a-4dd5-aa18-5965253c9b80" Version="1.0" Language="en-US" Publisher="HenrikLykke"/>
-    <DisplayName>SqlAnalyzer.Vsix</DisplayName>
+    <Identity Id="TSqlAnalyzer.Vsix..d48c281e-9c8a-4dd5-aa18-5965253c9b80" Version="0.1.0.0" Language="en-US" Publisher="ErikEJ"/>
+    <DisplayName>TSqlAnalyzer</DisplayName>
     <Description xml:space="preserve">T-SQL Code Analyzer for Visual Studio 2015 preview - alpha version, limited functionality</Description>
   </Metadata>
   <Installation>
