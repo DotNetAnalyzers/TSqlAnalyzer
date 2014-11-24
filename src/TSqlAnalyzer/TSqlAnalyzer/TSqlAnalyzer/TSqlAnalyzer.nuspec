@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>TSqlAnalyzer</id>
+    <version>0.0.1-alpha1</version>
+    <title>TSqlAnalyzer</title>
+    <authors>dotnethenrik,ronniedrengen,erikej</authors>
+    <owners>erikej</owners>
+    <projectUrl>https://github.com/ErikEJ/TSqlAnalyzer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>T-SQL Code Analyzer for Visual Studio 2015 Preview - alpha version, limited functionality</description>
+    <releaseNotes>Initial preview release</releaseNotes>
+    <tags>Roslyn Analyzer Tsql SQL</tags>
+	<dependencies>
+		<dependency id="Microsoft.SqlServer.TransactSql.ScriptDom" version="12.0" />
+	</dependencies>
+  </metadata>
+  <files>
+    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
+    <file src="tools\*.ps1" target="tools\" />
+  </files>
+</package>
