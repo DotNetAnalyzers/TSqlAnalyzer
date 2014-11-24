@@ -77,7 +77,7 @@ namespace TSqlAnalyzer
                 Diagnostics.InterpolatedStringExpressionDiagnostic.Run(context, interpolatedExpression);
                 return;
             }
-
+            
             Diagnostics.ExpressionDiagnostic.Run(context, expressionSyntax);
         }
 	}

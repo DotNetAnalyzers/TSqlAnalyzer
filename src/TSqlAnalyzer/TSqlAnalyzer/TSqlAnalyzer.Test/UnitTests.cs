@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -78,7 +77,7 @@ namespace ConsoleApplication1
 		{
 			string selection = ""id, name, title"";
             string where = ""id = '1'"";
-            var cmd = new SqlCommand(""SEL \{selection} WHERE \{where}"");
+            var cmd = new SqlCommand(""SEL \{selection} FROM myTable WHERE \{where}"");
         }
 	}
 }";
@@ -90,6 +89,41 @@ namespace ConsoleApplication1
                 Locations =
                     new[] {
                     new DiagnosticResultLocation("Test0.cs", 13, 23)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void stringbuilder_syntax_error_as_expected()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication1
+{
+	class TypeName
+	{
+		private void AnalyzerTest()
+		{
+			StringBuilder sbl = new StringBuilder();
+            sbl.Append(""SEL"");
+            sbl.Append("" * "");
+            sbl.Append(""FROM user"");
+            var cmd2 = new SqlCommand(sbl.ToString());
+        }
+	}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 15, 24)
                 }
             };
 
@@ -127,8 +161,43 @@ class TypeName
 			VerifyCSharpDiagnostic(test, expected);
 		}
 
+        [TestMethod]
+        public void Invalid_concatenation_Sql_Reported_In_Constructor_Literal()
+        {
+            var test = @"
+using System;
+using System.Data.SqlClient;
 
-		[TestMethod]
+namespace ConsoleApplication1
+{
+class TypeName
+{
+	private void AnalyzerTest()
+	{
+		string selection = "" * "";
+        string where = ""id = '1'"";
+        string sql = ""SEL "" + selection + ""WHERE "" + where;
+
+        var cmd2 = new SqlCommand(sql);
+    }
+}
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Message = "Incorrect syntax near SEL.",
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                    new DiagnosticResultLocation("Test0.cs", 15, 20)
+                }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+
+        [TestMethod]
 		public void Invalid_Sql_Reported_In_Simple_Assignment()
 		{
 			var test = @"

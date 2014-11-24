@@ -22,7 +22,7 @@ namespace TSqlAnalyzer.Diagnostics
             if (string.IsNullOrWhiteSpace(id))
                 return;
 
-            string sql = Helper.BuildSqlStringFromList(context, id);
+            string sql = Helper.BuildSqlStringFromIdString(context, id);
 
             if (string.IsNullOrWhiteSpace(sql))
                 return;
