@@ -10,7 +10,7 @@ using System.Linq;
 namespace TSqlAnalyzer
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class SqlAnalyzerAnalyzer : DiagnosticAnalyzer
+	public class TSqlAnalyzer : DiagnosticAnalyzer
 	{
 		public const string DiagnosticId = "TSqlAnalyzer";
 		internal const string Title = "Illegal T-SQL";

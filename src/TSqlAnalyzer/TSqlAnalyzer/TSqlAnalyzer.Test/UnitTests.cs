@@ -83,7 +83,7 @@ namespace ConsoleApplication1
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near title.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -118,7 +118,7 @@ namespace ConsoleApplication1
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -149,7 +149,7 @@ class TypeName
 }";
 			var expected = new DiagnosticResult
 			{
-				Id = SqlAnalyzerAnalyzer.DiagnosticId,
+				Id = TSqlAnalyzer.DiagnosticId,
 				Message = "Incorrect syntax near SEL.",
 				Severity = DiagnosticSeverity.Error,
 				Locations =
@@ -184,7 +184,7 @@ class TypeName
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -217,7 +217,7 @@ class TypeName
 }";
 			var expected = new DiagnosticResult
 			{
-				Id = SqlAnalyzerAnalyzer.DiagnosticId,
+				Id = TSqlAnalyzer.DiagnosticId,
 				Message = "Incorrect syntax near SEL.",
 				Severity = DiagnosticSeverity.Error,
 				Locations =
@@ -250,7 +250,7 @@ class TypeName
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -283,7 +283,7 @@ class TypeName
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -316,7 +316,7 @@ class TypeName
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -349,7 +349,7 @@ class TypeName
 }";
             var expected = new DiagnosticResult
             {
-                Id = SqlAnalyzerAnalyzer.DiagnosticId,
+                Id = TSqlAnalyzer.DiagnosticId,
                 Message = "Incorrect syntax near SEL.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -384,7 +384,7 @@ class TypeName
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
-			return new SqlAnalyzerAnalyzer();
+			return new TSqlAnalyzer();
 		}
 	}
 }
