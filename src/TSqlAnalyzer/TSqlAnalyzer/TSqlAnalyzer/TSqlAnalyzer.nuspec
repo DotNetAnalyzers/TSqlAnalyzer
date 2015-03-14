@@ -2,21 +2,21 @@
 <package>
   <metadata>
     <id>TSqlAnalyzer</id>
-    <version>0.0.1-alpha2</version>
+    <version>0.0.1-alpha3</version>
     <title>TSqlAnalyzer</title>
     <authors>dothenrik,ronniedrengen,erikej</authors>
     <owners>erikej</owners>
-    <projectUrl>https://github.com/ErikEJ/TSqlAnalyzer</projectUrl>
+    <projectUrl>https://github.com/DotNetAnalyzers/TSqlAnalyzer</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>T-SQL Code Analyzer for Visual Studio 2015 Preview - alpha version, limited functionality</description>
-    <releaseNotes>Initial preview release</releaseNotes>
+    <description>T-SQL Code Analyzer for Visual Studio 2015 CTP6 - alpha version, limited functionality</description>
+    <releaseNotes>Update for CTP6</releaseNotes>
     <tags>Roslyn Analyzer Tsql SQL</tags>
 	<dependencies>
 		<dependency id="Microsoft.SqlServer.TransactSql.ScriptDom" version="12.0" />
 	</dependencies>
   </metadata>
   <files>
-    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
+    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Composition.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
     <file src="tools\*.ps1" target="tools\" />
   </files>
 </package>

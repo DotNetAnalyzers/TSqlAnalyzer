@@ -71,7 +71,7 @@ namespace TSqlAnalyzer
                 Diagnostics.BinaryExpressionDiagnostic.Run(context, binaryExpression);
                 return;
             }
-            var interpolatedExpression = expressionSyntax as InterpolatedStringSyntax;
+            var interpolatedExpression = expressionSyntax as InterpolatedStringExpressionSyntax;
             if (interpolatedExpression != null)
             {
                 Diagnostics.InterpolatedStringExpressionDiagnostic.Run(context, interpolatedExpression);
