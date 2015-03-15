@@ -62,9 +62,8 @@ namespace TestHelper
       foreach (var project in projects)
       {
         var compilation = project.GetCompilationAsync().Result;
-        var driver = AnalyzerDriver.Create(compilation, ImmutableArray.Create(analyzer), null, out compilation, CancellationToken.None);
-        var discarded = compilation.GetDiagnostics();
-        var diags = driver.GetDiagnosticsAsync().Result;
+        var compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create(analyzer), null, CancellationToken.None);
+        var diags = compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().Result;
         foreach (var diag in diags)
         {
           if (diag.Location == Location.None || diag.Location.IsInMetadata)
@@ -157,7 +156,7 @@ namespace TestHelper
 
       var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
-      var solution = new CustomWorkspace()
+      var solution = new AdhocWorkspace()
           .CurrentSolution
           .AddProject(projectId, TestProjectName, TestProjectName, language)
           .AddMetadataReference(projectId, CorlibReference)
