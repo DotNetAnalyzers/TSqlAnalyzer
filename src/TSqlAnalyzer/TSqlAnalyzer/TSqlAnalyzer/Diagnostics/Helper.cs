@@ -14,8 +14,7 @@ namespace TSqlAnalyzer.Diagnostics
         {
             string sql = string.Empty;
 
-            if (id.Contains("\\{"))
-                id = id.Replace("\\{", " + {").Replace("}", "} + ");
+            id = id.Replace("{", " + {").Replace("}", "} + ");
 
             string[] list = id.Split('+');
 
@@ -23,7 +22,7 @@ namespace TSqlAnalyzer.Diagnostics
             {
                 if (s.Contains("{") == false)
                 {
-                    sql += s.Replace("\"", string.Empty);
+                    sql += s.Replace("$\"", string.Empty).Replace("\"", string.Empty);
                 }
                 else
                 {
