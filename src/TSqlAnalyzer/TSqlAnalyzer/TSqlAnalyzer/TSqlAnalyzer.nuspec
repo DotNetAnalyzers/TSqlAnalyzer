@@ -16,7 +16,7 @@
 	</dependencies>
   </metadata>
   <files>
-    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Composition.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
+    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.*;**\System.Composition.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
     <file src="tools\*.ps1" target="tools\" />
   </files>
 </package>
