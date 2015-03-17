@@ -1,7 +1,7 @@
 TSqlAnalyzer
 ============
 
-T-SQL Code Analyzer for Visual Studio 2015 preview - alpha version, limited functionality.
+T-SQL Code Analyzer for Visual Studio 2015 CTP6 - alpha version, limited functionality.
 
 Based on the [Microsoft.SqlServer.TransactSql.ScriptDom](http://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom/) NuGet package.
 
