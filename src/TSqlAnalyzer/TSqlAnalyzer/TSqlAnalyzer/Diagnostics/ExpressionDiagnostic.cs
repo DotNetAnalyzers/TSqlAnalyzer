@@ -19,7 +19,10 @@ namespace TSqlAnalyzer.Diagnostics
 
         internal static void Run(SyntaxNodeAnalysisContext context, ExpressionSyntax token)
         {
-            string id = token.ToFullString();
+			if (token == null)
+				return;
+
+			string id = token.ToFullString();
             if (string.IsNullOrWhiteSpace(id))
                 return;
 

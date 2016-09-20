@@ -23,10 +23,28 @@ namespace TSqlAnalyzer
 		public override void Initialize(AnalysisContext context)
 		{
 			// TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
+			context.RegisterSyntaxNodeAction(AnalyzeStringLiteralForSql, SyntaxKind.LocalDeclarationStatement);
 			context.RegisterSyntaxNodeAction(AnalyzeConstructorNode, SyntaxKind.ObjectCreationExpression);
 			context.RegisterSyntaxNodeAction(AnalyzeAssignmentNode, SyntaxKind.SimpleAssignmentExpression);
 		}
 
+		private static void AnalyzeStringLiteralForSql(SyntaxNodeAnalysisContext context)
+		{
+			var localDeclarationExpression = context.Node as LocalDeclarationStatementSyntax;
+
+			var innerObjectInitializers = localDeclarationExpression.DescendantNodes().ToList();
+
+			var stringText = innerObjectInitializers.OfType<LiteralExpressionSyntax>().FirstOrDefault(x => x.IsKind(SyntaxKind.StringLiteralExpression) || x.IsKind(SyntaxKind.InterpolatedStringExpression));
+
+			if (stringText != null)
+			{
+				if (!SqlParser.Parse(stringText.ToFullString()).Any())
+					return;
+			}
+
+			ExpressionSyntax expressionSyntax = stringText;
+			RunDiagnostic(context, expressionSyntax);
+		}
 		private static void AnalyzeAssignmentNode(SyntaxNodeAnalysisContext context)
 		{
 			var assignmentExpression = (AssignmentExpressionSyntax)context.Node;
