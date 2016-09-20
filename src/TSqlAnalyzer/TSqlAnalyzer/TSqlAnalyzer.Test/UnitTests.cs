@@ -382,6 +382,14 @@ class TypeName
 			VerifyCSharpDiagnostic(test);
 		}
 
+		[TestMethod]
+		public void Test_NonSqlString_WithSqlPaser()
+		{
+			var result = SqlParser.Parse("select a value from Hello Test");
+
+			Assert.IsTrue(result.Count == 0, "Non Sql should not parse and returns no errors.");
+		}
+
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
 			return new TSqlAnalyzer();
